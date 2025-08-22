@@ -8,6 +8,6 @@ public interface ICollectionService
     Task<Result<CreateCollectionResponse>> CreateCollectionWithQuestionsAsync(
         CreateCollectionRequest request,
         CancellationToken cancellationToken = default);
-    Task<List<CollectionResponse>> UpdateCollectionAsync(int id, UpdateCollectionRequest nextRequest,
+    Task<Result<CollectionResponse>> UpdateCollectionAsync(int id, UpdateCollectionRequest nextRequest,
         CancellationToken cancellationToken = default);
 }

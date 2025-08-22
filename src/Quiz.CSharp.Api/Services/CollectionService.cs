@@ -137,24 +137,30 @@ public sealed class CollectionService(
         };
     }
 
-    public async Task<List<CollectionResponse>> UpdateCollectionAsync(
+    public async Task<Result<CollectionResponse>> UpdateCollectionAsync(
         int id,
         UpdateCollectionRequest nextRequest,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            var collections = await collectionRepository.UpdateCollectionAsync(
+            var updatedCollection = await collectionRepository.UpdateCollectionAsync(
                 id,
                 mapper.Map<Collection>(nextRequest),
                 cancellationToken);
 
-            return collections.Select(c => mapper.Map<CollectionResponse>(c)).ToList();
+            if (updatedCollection == null)
+            {
+                return Result<CollectionResponse>.Failure($"Collection with ID {id} not found.");
+            }
+
+            var response = mapper.Map<CollectionResponse>(updatedCollection);
+            return Result<CollectionResponse>.Success(response);
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Error updating collection {Id}", id);
-            throw;
+            return Result<CollectionResponse>.Failure("An error occurred while updating the collection.");
         }
     }
 }

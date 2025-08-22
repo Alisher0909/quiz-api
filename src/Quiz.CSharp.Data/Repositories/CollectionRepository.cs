@@ -39,7 +39,7 @@ public sealed class CollectionRepository(ICSharpDbContext context) : ICollection
             .Distinct()
             .ToListAsync(cancellationToken);
 
-    public async Task<List<Collection>> UpdateCollectionAsync(int id, Collection updatedCollection, CancellationToken cancellationToken = default)
+    public async Task<Collection> UpdateCollectionAsync(int id, Collection updatedCollection, CancellationToken cancellationToken = default)
     {
         var collection = await context.Collections
             .Include(c => c.Questions)
@@ -57,10 +57,7 @@ public sealed class CollectionRepository(ICSharpDbContext context) : ICollection
         }
 
         await context.SaveChangesAsync(cancellationToken);
-
-        return await context.Collections
-            .Include(c => c.Questions)
-            .ToListAsync(cancellationToken);
+        return collection;
     }
 }
 
